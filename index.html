@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Valorant VOD Review</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: #f5f5f5;
+      background: url("https://images.alphacoders.com/132/thumb-1920-1327330.png") no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    /* HEADER */
+    header {
+      background: rgba(24,24,24,0.9);
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      border-bottom: 2px solid #ff4655;
+      z-index: 1000;
+    }
+    header h1 { margin: 0; font-size: 22px; color: #ff4655; }
+
+    /* NAV BAR */
+    nav { display: flex; gap: 20px; }
+    nav a {
+      color: #f5f5f5;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    nav a:hover { color: #ff4655; }
+
+    /* MAIN */
+    main { 
+      display: flex; 
+      flex-wrap: wrap; 
+      padding: 20px; 
+      gap: 20px; 
+    }
+    .box {
+      background: rgba(26,26,26,0.9);
+      padding: 15px;
+      border-radius: 10px;
+      flex: 1 1 320px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.6);
+    }
+
+    /* TEXT COLORS */
+    h2 { margin-top: 0; color: #ff4655; }
+    h3 { color: #ff9ea9; }
+
+    /* INPUTS + BUTTONS */
+    input, textarea, button {
+      width: 100%; padding: 8px; margin-top: 8px;
+      border-radius: 6px; border: none; font-size: 14px;
+    }
+    input, textarea {
+      background: #2a2a2a; color: white;
+    }
+    button {
+      background: #ff4655; color: white; cursor: pointer; font-weight: bold;
+    }
+    button:hover { background: #e63d4b; }
+
+    /* VIDEO */
+    video { width: 100%; border-radius: 8px; margin-top: 10px; }
+
+    /* NOTES + COMMENTS */
+    .note, .comment {
+      background: #2a2a2a; padding: 8px; border-radius: 6px;
+      margin-top: 8px; font-size: 14px;
+    }
+    .note span { color: #ff4655; cursor: pointer; margin-right: 5px; }
+    .notes, .comments { max-height: 200px; overflow-y: auto; }
+
+    /* VOD LIST */
+    .vod-item {
+      padding: 6px; border-bottom: 1px solid #333;
+      cursor: pointer; color: #ddd;
+    }
+    .vod-item:hover { color: #ff4655; }
+
+    /* RANK SECTION */
+    .rank-section {
+      background: rgba(26,26,26,0.9);
+      margin: 20px;
+      padding: 20px;
+      border-radius: 12px;
+    }
+    .rank-section h2 { color: #ff4655; }
+    .ranks {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .rank {
+      text-align: center;
+      background: #2a2a2a;
+      border-radius: 10px;
+      padding: 10px;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+    .rank:hover {
+      background: #ff4655;
+      transform: scale(1.05);
+    }
+    .rank img {
+      width: 70px; height: 70px;
+    }
+    .rank p { margin-top: 8px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <!-- HEADER WITH NAV -->
+  <header>
+    <h1>Valorant VOD Review</h1>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">Upload</a>
+      <a href="#">Reviews</a>
+      <a href="#">About</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Upload Section -->
+    <section class="box">
+      <h2>Upload VOD</h2>
+      <input type="file" id="fileInput" accept="video/*">
+      <input type="text" id="vodTitle" placeholder="Title (optional)">
+      <button onclick="uploadVod()">Add VOD</button>
+    </section>
+
+    <!-- VOD List -->
+    <section class="box">
+      <h2>Your VODs</h2>
+      <div id="vodList"></div>
+    </section>
+
+    <!-- Review Section -->
+    <section class="box">
+      <h2 id="reviewTitle">Select a VOD</h2>
+      <video id="videoPlayer" controls></video>
+
+      <!-- Notes -->
+      <h3>Notes</h3>
+      <input type="text" id="noteText" placeholder="Add note...">
+      <button onclick="addNote()">Add Note @ current time</button>
+      <div class="notes" id="notes"></div>
+
+      <!-- Comments -->
+      <h3>Comments</h3>
+      <input type="text" id="name" placeholder="Your name (optional)">
+      <textarea id="commentText" placeholder="Write a comment..."></textarea>
+      <button onclick="addComment()">Post Comment</button>
+      <div class="comments" id="comments"></div>
+    </section>
+  </main>
+
+  <!-- RANK SECTION -->
+  <section class="rank-section">
+    <h2>Valorant Competitive Ranks</h2>
+    <div class="ranks">
+      <div class="rank" onclick="openRank('iron')">
+        <img src="rank/Iron_3_Rank.webp" alt="Iron">
+        <p>Iron</p>
+      </div>
+      <div class="rank" onclick="openRank('bronze')">
+        <img src="rank/Bronze_3_Rank.webp" alt="Bronze">
+        <p>Bronze</p>
+      </div>
+      <div class="rank" onclick="openRank('silver')">
+        <img src="rank/Silver_3_Rank.webp" alt="Silver">
+        <p>Silver</p>
+      </div>
+      <div class="rank" onclick="openRank('gold')">
+        <img src="rank/Gold_3_Rank.webp" alt="Gold">
+        <p>Gold</p>
+      </div>
+      <div class="rank" onclick="openRank('platinum')">
+        <img src="rank/Platinum_3_Rank.webp" alt="Platinum">
+        <p>Platinum</p>
+      </div>
+      <div class="rank" onclick="openRank('diamond')">
+        <img src="rank/Diamond_3_Rank.webp" alt="Diamond">
+        <p>Diamond</p>
+      </div>
+      <div class="rank" onclick="openRank('ascendant')">
+        <img src="rank/Ascendant_3_Rank.webp" alt="Ascendant">
+        <p>Ascendant</p>
+      </div>
+      <div class="rank" onclick="openRank('immortal')">
+        <img src="rank/Immortal_3_Rank.webp" alt="Immortal">
+        <p>Immortal</p>
+      </div>
+      <div class="rank" onclick="openRank('radiant')">
+        <img src="rank/Radiant_Rank.webp" alt="Radiant">
+        <p>Radiant</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const vodList = document.getElementById("vodList");
+    const player = document.getElementById("videoPlayer");
+    const reviewTitle = document.getElementById("reviewTitle");
+    const notesDiv = document.getElementById("notes");
+    const commentsDiv = document.getElementById("comments");
+
+    let vods = [];
+    let activeVod = null;
+
+    // Upload new VOD
+    function uploadVod() {
+      const file = document.getElementById("fileInput").files[0];
+      const title = document.getElementById("vodTitle").value || file?.name || "Untitled";
+      if (!file) return alert("Please select a video file.");
+
+      const url = URL.createOwebbjectURL(file);
+      const vod = { id: Date.now(), title, url, notes: [], comments: [] };
+      vods.push(vod);
+      renderVodList();
+      selectVod(vod.id);
+      document.getElementById("vodTitle").value = "";
+      document.getElementById("fileInput").value = "";
+    }
+
+    // Show VOD list
+    function renderVodList() {
+      vodList.innerHTML = "";
+      vods.forEach(vod => {
+        const div = document.createElement("div");
+        div.className = "vod-item";
+        div.textContent = vod.title;
+        div.onclick = () => selectVod(vod.id);
+        vodList.appendChild(div);
+      });
+    }
+
+    // Select and play a VOD
+    function selectVod(id) {
+      activeVod = vods.find(v => v.id === id);
+      if (!activeVod) return;
+      reviewTitle.textContent = activeVod.title;
+      player.src = activeVod.url;
+      renderNotes();
+      renderComments();
+    }
+
+    // Add timestamped note
+    function addNote() {
+      if (!activeVod) return;
+      const t = Math.floor(player.currentTime);
+      const text = document.getElementById("noteText").value.trim();
+      if (!text) return;
+      activeVod.notes.push({ time: t, text });
+      document.getElementById("noteText").value = "";
+      renderNotes();
+    }
+
+    // Show notes
+    function renderNotes() {
+      notesDiv.innerHTML = "";
+      activeVod.notes.forEach(n => {
+        const div = document.createElement("div");
+        div.className = "note";
+        div.innerHTML = `<span onclick="seekTo(${n.time})">[${formatTime(n.time)}]</span> ${n.text}`;
+        notesDiv.appendChild(div);
+      });
+    }
+
+    function seekTo(t) { player.currentTime = t; player.play(); }
+    function formatTime(s) { return new Date(s * 1000).toISOString().substr(14, 5); }
+
+    // Add comment
+    function addComment() {
+      if (!activeVod) return;
+      const name = document.getElementById("name").value || "Anonymous";
+      const text = document.getElementById("commentText").value.trim();
+      if (!text) return;
+      activeVod.comments.push({ name, text, at: new Date().toLocaleString() });
+      document.getElementById("commentText").value = "";
+      renderComments();
+    }
+
+    // Show comments
+    function renderComments() {
+      commentsDiv.innerHTML = "";
+      activeVod.comments.forEach(c => {
+        const div = document.createElement("div");
+        div.className = "comment";
+        div.innerHTML = `<b>${c.name}</b> <small>(${c.at})</small><br>${c.text}`;
+        commentsDiv.appendChild(div);
+      });
+    }
+
+    // Open new rank page
+    function openRank(rank) {
+      window.open(rank + ".html", "_blank");
+    }
+  </script>
+</body>
+</html>
